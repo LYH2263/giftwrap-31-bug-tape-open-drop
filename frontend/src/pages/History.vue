@@ -17,8 +17,8 @@ onMounted(async () => {
 <template>
   <div class="page">
     <h1>用纸档</h1>
-    <p class="hint" data-list-pin="tape">列表优先钉写入摘要；详情走开放投影。</p>
-    <p class="hint">列表钉写入摘要（tape_on / tape_m）；详情走开放视图字段。</p>
+    <p class="hint" data-list-pin="tape">列表与详情同钉写入值：胶带米数与面积按落库时展示。</p>
+    <p class="hint">改默认余量或胶带开关后，旧编号仍按写入时的 tape_on / tape_m 展示，不重算。</p>
     <p class="lede">算纸页「写入用纸档」后的落库结果，按次保留盒名、用纸面积与胶带米数；点行查看详情。</p>
     <p v-if="err" class="bad">{{ err }}</p>
     <p v-else-if="!items.length" class="empty">还没有写入过。先去算纸试一单。</p>

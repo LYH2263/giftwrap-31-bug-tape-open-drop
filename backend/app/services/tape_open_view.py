@@ -1,37 +1,28 @@
-"""Open-path tape: list keeps pin, detail zeros tape_m; live allowance restamp."""
+"""Read-path tape view: saved runs are pinned at write time.
+
+List and detail both read the persisted result verbatim — tape_m,
+tape_allowance_m and paper_m2 are never recomputed, zeroed, or restamped
+from live settings when a run is opened. Changing the system default
+allowance (or the tape default) afterwards must not reshape old runs.
+"""
 from __future__ import annotations
 from copy import deepcopy
 
 
-def open_drop_tape(result: dict, live_allowance: float | None = None, view: str = "detail") -> dict:
+def pinned_run_view(result: dict) -> dict:
+    """Return the stored run result verbatim (deep copy) for list and detail."""
     if not isinstance(result, dict):
         return result
-    out = deepcopy(result)
-    if not out.get("tape_on"):
-        return out
-    if out.get("list_tape_m") is None:
-        out["list_tape_m"] = out.get("tape_m")
-    if view == "list":
-        if live_allowance is not None:
-            out["tape_allowance_m"] = float(live_allowance)
-        out["open_view"] = "list"
-        return out
-    out["tape_m"] = 0
-    if live_allowance is not None:
-        out["tape_allowance_m"] = float(live_allowance)
-    out["open_tape_dropped"] = True
-    out["open_view"] = "detail"
-    return out
+    return deepcopy(result)
 
 
 def tape_projection(result: dict) -> dict:
+    """Detail projection: the pinned tape/paper values the run was written with."""
     if not isinstance(result, dict):
         return {}
     return {
         "tape_on": result.get("tape_on"),
         "tape_allowance_m": result.get("tape_allowance_m"),
         "tape_m": result.get("tape_m"),
-        "list_tape_m": result.get("list_tape_m"),
         "paper_m2": result.get("paper_m2"),
-        "open_tape_dropped": bool(result.get("open_tape_dropped")),
     }
