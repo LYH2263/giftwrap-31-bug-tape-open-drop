@@ -17,10 +17,8 @@ def insert_run(box_id, overlap, result, note=""):
 
 
 def list_runs(limit=50):
-    from app.services.tape_open_view import open_drop_tape
-    from app.repositories import settings_repo
+    from app.services.tape_open_view import pinned_tape_view
 
-    live = settings_repo.get_tape_allowance_m() if hasattr(settings_repo, "get_tape_allowance_m") else None
     c = connect()
     try:
         rows = c.execute(
@@ -31,7 +29,7 @@ def list_runs(limit=50):
         for row in rows:
             d = dict(row)
             raw = json.loads(d.pop("result_json"))
-            d["result"] = open_drop_tape(raw, live_allowance=live, view="list")
+            d["result"] = pinned_tape_view(raw)
             out.append(d)
         return out
     finally:
@@ -39,10 +37,8 @@ def list_runs(limit=50):
 
 
 def get_run(run_id):
-    from app.services.tape_open_view import open_drop_tape
-    from app.repositories import settings_repo
+    from app.services.tape_open_view import pinned_tape_view
 
-    live = settings_repo.get_tape_allowance_m() if hasattr(settings_repo, "get_tape_allowance_m") else None
     c = connect()
     try:
         row = c.execute(
@@ -54,7 +50,7 @@ def get_run(run_id):
             return None
         d = dict(row)
         raw = json.loads(d.pop("result_json"))
-        d["result"] = open_drop_tape(raw, live_allowance=live, view="detail")
+        d["result"] = pinned_tape_view(raw)
         return d
     finally:
         c.close()

@@ -1,7 +1,5 @@
 <script setup>
-// preferOpenMetric: detail board reads open_projection first when present
-
-// open-view: 开放视图：胶带开关保留，米数取开放路径
+// 详情与列表同钉写入时的 tape_on / 余量 / tape_m，不随默认设置改动。
 
 import { onMounted, ref } from 'vue'
 import { getJSON } from '../api'
@@ -35,7 +33,7 @@ onMounted(async () => {
         <li>
           <span>封口胶带 tape_m</span>
           <span class="meta">
-            {{ run.result?.tape_on ? `${(run.open_projection?.tape_m ?? run.result?.projection?.tape_m ?? run.result.tape_m)} m（含余量 ${run.result.tape_allowance_m} m）` : '未计胶带' }}
+            {{ run.result?.tape_on ? `${(run.tape_projection?.tape_m ?? run.result.tape_m)} m（含余量 ${run.result.tape_allowance_m} m）` : '未计胶带' }}
           </span>
         </li>
         <li>

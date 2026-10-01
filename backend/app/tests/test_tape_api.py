@@ -64,10 +64,15 @@ def test_default_change_pins_history_and_dry_calc_corroborates(client):
     assert put.json()["tape_allowance_m"] == "0.9"
 
     # history detail stays pinned at write-time values
-    saved = c.get(f"/api/runs/{run_id}").json()["result"]
+    detail = c.get(f"/api/runs/{run_id}").json()
+    saved = detail["result"]
     assert saved["tape_m"] == 1.2
     assert saved["tape_allowance_m"] == 0.2
     assert saved["paper_m2"] == 0.31
+    # detail projection serves the same pinned numbers, not the live default
+    assert detail["tape_projection"] == {
+        "tape_on": True, "tape_allowance_m": 0.2, "tape_m": 1.2, "paper_m2": 0.31,
+    }
     # list view pins too
     listed = c.get("/api/runs").json()["items"][0]["result"]
     assert listed["tape_m"] == 1.2
